@@ -1,0 +1,45 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+void build(vector<int>& st, vector<int>& arr, int n) {
+    for (int i = 0; i < n; i++) 
+        st[n + i] = arr[i];    
+    for (int i = n - 1; i >= 1; i--)
+        st[i] = st[2 * i]+st[2 * i + 1];
+}
+ 
+int query(vector<int>& st, int l, int r, int n) {
+    l += n;
+    r += n;
+    int res =0;
+    while (l < r) {
+        if (l & 1)
+        {
+           res+=st[l];
+            l++; 
+        }
+        
+        if (r & 1) 
+        {
+            r--;
+          res+=st[r];  
+        }
+        l /= 2;
+        r /= 2;
+    }
+    return res;
+}
+int main() {
+    vector<int> arr = { 3, 8 ,4 , 5, 7, 22, 9, 10, 6, 33 };
+    int n = arr.size();
+    vector<int> st(4 * n);
+    build(st, arr, n);
+    
+    int l; 
+    int r;
+    cin>>l>>r;
+    cout << "Sum in range " << l << " to " << r << " is " << query(st, l, r + 1, n) << "\n";
+    
+    return 0;
+}

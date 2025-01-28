@@ -1,0 +1,55 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+void segmetno_drvomax(int niza[],int br,int left, int right, vector<int>vec)
+{
+    if(left==right)// proveruvame dali nodeot e leaf
+    {
+        vec[br]=niza[left];
+        return;
+    }
+    else{
+        int middle=(right+left)/2;
+        segmetno_drvomax(niza,br*2,left,middle,vec);  //leva polovina,rekurzivno pravime levo subtree
+        segmetno_drvomax(niza,br*2+1,middle+1,right,vec); //desna polovina, rekurzivno pravime desno subtree
+        vec[br]=max(vec[br*2],vec[br*2+1]); // valueto na momentaliot node ke bide max na levoto i na desnoto dete
+    }
+}
+
+int maxx(int br,int a,int b,int A,int B, vector<int>vec)
+{
+     if(a>b)
+     {
+         return 0;//dokolku ne postoe rangeot
+     }
+     if(a==A&&b==B)
+     {
+         return vec[br];//dokolku dadeniot range , se sovpaga na rangeot na postoecko subtree, da se vrate max na toa drvo
+     }
+     int sredina=(A+B)/2;
+     int x= maxx(2*br,a,min(sredina,B),A,sredina,vec); //min od levoto subtree
+     int y=maxx(2*br+1,max(a,sredina+1),b,sredina+1,B,vec); // min od desnoto subtree
+return max(x,y);
+}
+void updatemax(int br, int a, int b, int org, int val, vector<int>vec)
+{
+    if(a == b)
+    vec[br] = val;
+
+    else
+    {
+        int mid = (a+b)/2;
+        if(org<=mid)   //proveruva vo koe subtree dali vo levoto ili desnoto se naoga brojceto so sakam da go smenam
+        {
+            updatemax(br*2,a,mid,org,val,vec); //levo
+        }
+        else
+        {
+            updatemax(2*br+1,mid+1,b,org,val,vec);//desno
+        }
+
+        vec[br] = max(vec[br*2], vec[br*2+1]);
+    }
+}
